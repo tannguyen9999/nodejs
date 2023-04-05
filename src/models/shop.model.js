@@ -7,22 +7,22 @@ const COLLECTION_NAME = 'Shops'
 // Declare the Schema of the Mongo model
 var shopSchema = new Schema({
     name:{
-        type:Schema.Types.String,
+        type:String,
         trim:true,
         maxLength:150
     },
     email:{
-        type:Schema.Types.String,
+        type:String,
         required:true,
         unique:true,
         trim:true,
     },
     password:{
-        type:Schema.Types.String,
+        type:String,
         required:true,
     },
     status:{
-        type:Schema.Types.String,
+        type:String,
         enum:['active', 'inactive'],
         default:'inactive'
     },

@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const {db:{host,name,port}} = require('../configs/config.mongodb');
 const { countConnect } = require('../helpers/check.connect');
 const connectString = `mongodb://${host}:${port}/${name}`
+console.log(connectString);
 class Database{
     constructor(){
         if(!Database.intance){
@@ -14,7 +15,7 @@ class Database{
         }
     }
     connect() {
-        if(1 === 1){
+        if(1 === 2){
             mongoose.set('debug',true)
             mongoose.set('debug',{color:true})
         }
