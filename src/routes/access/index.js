@@ -1,8 +1,10 @@
 'use strict';
 const express = require('express');
 const accessController = require('../../controllers/access.controller');
+const { asyncHandler } = require('../../helpers/check.connect');
 const router = express.Router()
+router.post('/shop/signup',asyncHandler(accessController.signUp))
+router.post('/shop/login',asyncHandler(accessController.login))
 
-router.post('/shop/signup',accessController.signUp)
 
 module.exports = router

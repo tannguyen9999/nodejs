@@ -17,10 +17,15 @@ var keyTokenSchema = new Schema({
         type:String,
         required:true,
     },
-    refreshToken:{
+    refreshTokenUsed:{
         type:Schema.Types.Array,
         default:[]
     },
+    refreshToken:{
+        type:String,
+        required:true,
+    },
+
 },{
     collection:COLLECTION_NAME,
     timestamps:true,

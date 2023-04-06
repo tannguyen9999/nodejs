@@ -1,5 +1,10 @@
 'use strict';
 const JWT = require('jsonwebtoken');
+const HEADER = {
+    API_KEY: 'x-api-key',
+    CLIENT_ID: 'x-client-id',
+    AUTHORIZATION_KEY: 'authorization',
+}
 const createTokenPair =  async (payload,publicKey,privateKey)=>{
     try {
         //access token
@@ -24,5 +29,6 @@ const createTokenPair =  async (payload,publicKey,privateKey)=>{
         
     }
 }
+const authentication = async
 
 module.exports = { createTokenPair}
