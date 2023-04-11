@@ -1,12 +1,14 @@
 'use strict';
 const StatusCode = {
     FORBIDDEN: 403,
-    CONFLICT: 409
+    CONFLICT: 409,
+    NOTFOUND:404,
 }
 
 const ReasonStatusCode = {
     FORBIDDEN: "Bad Request Error", 
     CONFLICT: "Conflict Error",
+    NOTFOUND:"NOT FOUND",
 }
 class ErrorResponse extends Error {
     constructor(message,status){
@@ -27,7 +29,21 @@ class BadRequestError extends ErrorResponse{
     }
 }
 
+class NotFoundError extends ErrorResponse{
+    constructor(message = ReasonStatusCode.NOTFOUND,status = StatusCode.NOTFOUND){
+        super(message,status);
+    }
+}
+
+class FORBIDDENERROR extends ErrorResponse{
+    constructor(message = ReasonStatusCode.FORBIDDEN,status = StatusCode.FORBIDDEN){
+        super(message,status);
+    }
+}
+
 module.exports = {
     ConfictRequestError,
-    BadRequestError
+    BadRequestError,
+    NotFoundError,
+    FORBIDDENERROR
 };

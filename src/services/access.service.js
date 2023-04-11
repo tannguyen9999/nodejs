@@ -4,11 +4,11 @@ const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const KeyTokenSevice = require("./keyToken.service");
-const { createTokenPair } = require("../auth/authUtils");
+const { createTokenPair, verifyJWT } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
-const { BadRequestError } = require("../core/error.response");
+const { BadRequestError, FORBIDDENERROR } = require("../core/error.response");
 const findByEmail = require("./shop.service");
-const { token } = require("morgan");
+const { removeKeyById, findByRefreshTokenUsed, deleteKeyById, findByRefreshToken } = require("./keyToken.service");
 
 const RoleShop = {
   SHOP: "Shop",
@@ -125,6 +125,84 @@ class AccessService {
       tokens
     }
      
+  }
+  static logout = async (keyStore)=>{
+    return  await removeKeyById(keyStore._id)
+  }
+  // static handleRefreshToken = async (refreshToken)=>{
+  //   const foundToken = await findByRefreshTokenUsed(refreshToken)
+  //   if (foundToken){
+  //     const {userId,email} = await verifyJWT(refreshToken,foundToken.privateKey)
+  //     await deleteKeyById(userId)
+  //     throw new FORBIDDENERROR("Something went wrong !! pls relogin")
+  
+  //   }
+  //   const holderToken = await findByRefreshToken(refreshToken)
+  //   if(!holderToken){
+  //     throw new BadRequestError("Shop not found")
+  //   }
+  //   const {userId,email} = await verifyJWT(refreshToken,holderToken.privateKey)
+  
+  //   const foundShop = await findByEmail({email})
+  //   if (!foundShop){
+  //     throw new BadRequestError("Shop not found")
+  //   }
+  //   const tokens = await createTokenPair({
+  //     userId,
+  //     email
+  //   },holderToken.publicKey,holderToken.privateKey)
+
+  // //update token
+  //   await holderToken.updateOne({
+  //     $set:{
+  //       refreshToken:tokens.refreshToken,
+  //     },
+  //     $addToSet:{
+  //       refreshTokenUsed: refreshToken // da dc su dung de lay token moi
+  //     }
+  //   })
+  //   return {
+  //     userId:{userId,email},
+  //     tokens,
+  //   }
+  // }
+
+  static handleRefreshTokenV2 = async ({
+    refreshToken,
+    user,
+    keyStore
+})=>{
+    const {userId,email} = user
+    if(keyStore.refreshTokenUsed.includes(refreshToken)){
+      await deleteKeyById(userId) 
+      throw new FORBIDDENERROR("Something went wrong !! pls relogin")
+    }
+    if(keyStore.refreshToken !== refreshToken){
+      throw new BadRequestError("Shop not found")
+    }
+  
+    const foundShop = await findByEmail({email})
+    if (!foundShop){
+      throw new BadRequestError("Shop not found")
+    }
+    const tokens = await createTokenPair({
+      userId,
+      email
+    },keyStore.publicKey,keyStore.privateKey)
+
+  //update token
+    await keyStore.updateOne({
+      $set:{
+        refreshToken:tokens.refreshToken,
+      },
+      $addToSet:{
+        refreshTokenUsed: refreshToken // da dc su dung de lay token moi
+      }
+    })
+    return {
+      user,
+      tokens,
+    }
   }
 }
 
