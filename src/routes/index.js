@@ -1,14 +1,15 @@
-'use strict';
-const express = require('express');
-const { apiKey, checkPermission,  } = require('../auth/checkAuth');
-const { asyncHandler } = require('../helpers/check.connect');
+"use strict";
+const express = require("express");
+const { apiKey, checkPermission } = require("../auth/checkAuth");
+const { asyncHandler } = require("../helpers/check.connect");
 const router = express.Router();
 
 // check API key
-router.use(asyncHandler(apiKey))
-router.use(checkPermission('0000'))
+router.use(asyncHandler(apiKey));
+router.use(checkPermission("0000"));
 // check permissions
 
-router.use('/v1/api',require('./access'))
+router.use("/v1/api", require("./access"));
+router.use("/v1/api/product", require("./product"));
 
-module.exports = router
+module.exports = router;
